@@ -2,24 +2,33 @@ from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtWidgets import QWidget
 from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QPushButton
 
 class MenuWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        # Setting internal attributes
+            # Setting internal attributes
         self.__components = {
             'main_layout': QGridLayout(),
-            'main_widget': QWidget()
+            'main_widget': QWidget(),
+            'bttn_list': []
         }
+
+        #Add test button
+        self.add_button('Say hello', say_hello)
 
         #window setting
         self.set_window()
 
-        #Test Hello World label
-        test_label = QLabel("Hello World")
-        self.main_layout.addWidget(test_label)
-
     #define getters and setters
+    @property
+    def __bttn_list(self):
+        return self.__components['bttn_list']
+
+    @__bttn_list.setter
+    def __bttn_list(self, new_list: list):
+        self.__components['bttn_list'] = new_list
+
     @property
     def __main_layout(self):
         return self.__components['main_layout']
@@ -43,7 +52,19 @@ class MenuWindow(QMainWindow):
 
         self.main_widget.setLayout(self.main_layout)
 
+        self.show_bttns()
+
         self.setCentralWidget(self.main_widget)
 
-    def add_button(self):
-        pass
+    def show_bttns(self):
+        for bttn in self.__bttn_list:
+            self.main_layout.addWidget(bttn)
+
+    def add_button(self, bttn_label: str, callback_func):
+        new_button = QPushButton(bttn_label)
+        new_button.clicked.connect(callback_func)
+
+        self.__bttn_list.append(new_button)
+
+def say_hello():
+    print('Hello there')
