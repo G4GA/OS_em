@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QLabel
 from PyQt6.QtWidgets import QPushButton
 
 class MenuWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, callback_fn):
         super().__init__()
             # Setting internal attributes
         self.__components = {
@@ -15,7 +15,7 @@ class MenuWindow(QMainWindow):
         }
 
         #Add test button
-        self.add_button('Say hello', say_hello)
+        self.add_button('Batch Processing', lambda: callback_fn('batch'))
 
         #window setting
         self.set_window()
@@ -52,19 +52,17 @@ class MenuWindow(QMainWindow):
 
         self.main_widget.setLayout(self.main_layout)
 
-        self.show_bttns()
+        self.__show_bttns()
 
         self.setCentralWidget(self.main_widget)
 
-    def show_bttns(self):
+    def __show_bttns(self):
         for bttn in self.__bttn_list:
             self.main_layout.addWidget(bttn)
 
-    def add_button(self, bttn_label: str, callback_func):
+    def add_button(self, bttn_label: str, callback_fn):
         new_button = QPushButton(bttn_label)
-        new_button.clicked.connect(callback_func)
+        new_button.clicked.connect(callback_fn)
 
         self.__bttn_list.append(new_button)
 
-def say_hello():
-    print('Hello there')
