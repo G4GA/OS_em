@@ -1,5 +1,5 @@
 from .menu_window import MenuWindow
-from .WSched.w_sched import WinScheduler
+from .WSched.w_batch import BatchWindow
 
 class WindowHandler():
     def __init__(self):
@@ -23,7 +23,7 @@ class WindowHandler():
         self.__current_window.close()
 
         if option == 'batch':
-            self.__current_window = WinScheduler()
+            self.__current_window = BatchWindow()
 
         self.__current_window.show()
 
