@@ -23,8 +23,13 @@ class WindowHandler():
         self.__current_window.close()
 
         if option == 'batch':
-            self.__current_window = BatchWindow()
+            self.__current_window = BatchWindow(self.go_back_fn)
 
         self.__current_window.show()
 
+    def go_back_fn(self):
+        self.__current_window.close()
+
+        self.__current_window = MenuWindow(self.close_menu)
+        self.__current_window.show()
 
