@@ -1,9 +1,6 @@
 """
 Process abstraction module
 """
-'''
-Process abstraction module
-'''
 
 from multiprocessing import Value
 from multiprocessing import Process
@@ -19,14 +16,20 @@ class PState(Enum):
 class ProcSim():
     def __init__(self):
         self.__components = {
-            'process': Process(target=self.completion_tracker),
+            'process': Process(target=self._completion_tracker),
             'state': Value('i', 0),
             'threshold': randint(7000, 20000),
             'progress':Value('i', 0)
         }
 
+    def run(self):
+        self._process.start()
+
+    def wait(self):
+        self._process.join()
+
     @property
-    def process(self):
+    def _process(self):
         return self.__components['process']
 
     @property
@@ -47,14 +50,21 @@ class ProcSim():
 
     @property
     def state(self):
-        return self.__components['state']
+        return self.__components['state'].value
 
     @state.setter
     def state(self, new_state: PState):
-        if new_state == PState.COMPLETED and self.process == self.threshold:
-            self.__components['state'] = new_state.value
+        if new_state == PState.COMPLETED and self._process == self.threshold:
+            self.__components['state'].value = new_state.value
         elif new_state in (PState.RUNNING, PState.HALTED):
-            self.__components['state'] = new_state.value
+            self.__components['state'].value = new_state.value
 
-    def completion_tracker(self):
-       pass 
+    def _update(self):
+        self._progress = self.progress + randint(7, 25)
+
+    def _completion_tracker(self):
+        self.state = PState.RUNNING
+        while self.progress <= self.threshold:
+            if self.state == PState.RUNNING.value:
+                self._update()
+        self.state = PState.COMPLETED
