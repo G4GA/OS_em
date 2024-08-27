@@ -1,13 +1,28 @@
+'''
+Batch scheduler window
+'''
+
+from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import (
-    #QLabel,
     QPushButton,
     QWidget,
     QVBoxLayout,
+    QProgressBar,
 )
+
 from .w_sched import SchedWindow
+from Scheds.batch import BatchScheduler
+from Scheds.procsim import (
+    ProcSim,
+    PState
+)
 
 class BatchWindow(SchedWindow):
     def __init__(self, go_back_fn):
+        self.__components = {
+            'prog_bar_list': [],
+            'scheduler': BatchScheduler(15)
+        }
         super().__init__(QVBoxLayout())
         self._set_main_widgets('upper')
         self._set_main_widgets('lower')
@@ -20,6 +35,26 @@ class BatchWindow(SchedWindow):
         self._load_style()
 
     @property
+    def scheduler(self):
+        return self.__components['scheduler']
+
+    def add_progress_bar(self):
+        for proc_sim in self.scheduler:
+            prog_bar_dict = BatchWindow._set_progbar(proc_sim)
+
+    @staticmethod
+    def _set_progbar(proc_sim: ProcSim):
+        progress_bar = QProgressBar()
+        progress_bar.setMaximum(proc_sim.threshold)
+        timer = QTimer()
+        timer.timeout.connect(BatchWindow.update_bar)
+        progress_bar.setMaximum(proc_sim.threshold)
+        return {}
+
+    @staticmethod
+    def update_bar(prog_bar: QProgressBar, proc_sim:ProcSim):
+        prog_bar.setValue(proc_sim.progress)
+
     def _upper(self):
         return self._components['upper']
 
@@ -36,7 +71,7 @@ class BatchWindow(SchedWindow):
         pass
 
     def _set_main_widgets(self, side):
-        widget = QWidget()
+        widget = QWiget()
         layout = QVBoxLayout()
 
         widget.setLayout(layout)

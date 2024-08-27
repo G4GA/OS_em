@@ -8,7 +8,8 @@ class BatchScheduler():
 
     def __init__(self, proc_amount):
         self.__components = {
-            'proclist': []
+            'proclist': [],
+            'cur_proc': None
         }
         self.__fill_queue(proc_amount)
 
@@ -20,8 +21,17 @@ class BatchScheduler():
     def proclist(self):
         return self.__components['proclist']
 
+    @property
+    def cur_proc(self):
+        return self.__components['cur_proc']
+
+    @cur_proc.setter
+    def _cur_proc(self, new_proc):
+        self.__components['cur_proc'] = new_proc
+
     def start_queue(self):
         for process in self.__components['process']:
+            self._cur_proc = process
             process.run()
             process.wait()
 
