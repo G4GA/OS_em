@@ -34,4 +34,7 @@ class BatchScheduler():
             self._cur_proc = process
             process.run()
             process.wait()
+            print(f'Process: {process} state: {process.state}')
+            print(f'Progress: {process.progress} threshold: {process.threshold}')
+
 

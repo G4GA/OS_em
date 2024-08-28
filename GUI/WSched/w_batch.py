@@ -16,8 +16,10 @@ from PyQt6.QtWidgets import (
 
 from Scheds.procsim import (
     ProcSim,
-    PState
+    #PState
 )
+
+from threading import Thread
 
 from Scheds.batch import BatchScheduler
 from .w_sched import SchedWindow
@@ -29,6 +31,7 @@ class BatchWindow(SchedWindow):
         self._components['scheduler'] = BatchScheduler(15)
         self._components['upper'] = {}
         self._components['lower'] = {}
+        self._components['sched_thread'] = Thread(target=self.scheduler.start_queue)
 
         self._set_main_widgets('upper')
         self._set_main_widgets('lower')
@@ -39,9 +42,12 @@ class BatchWindow(SchedWindow):
         self.setWindowTitle("Batch Processing")
         self.add_progress_bar()
 
-        self.scheduler.start_queue()
-
+        self.sched_thread.start()
         self._load_style()
+
+    @property
+    def sched_thread(self) -> Thread:
+        return self._components['sched_thread']
 
     @property
     def scheduler(self) -> BatchScheduler:
@@ -60,7 +66,7 @@ class BatchWindow(SchedWindow):
         progress_bar.setOrientation(Qt.Orientation.Vertical)
         timer = QTimer()
         timer.timeout.connect(lambda:BatchWindow.update_bar(progress_bar, proc_sim))
-        timer.start(100)
+        timer.start(10)
 
         return {'prog_bar': progress_bar, 'proc_sim': proc_sim, 'timer': timer}
 

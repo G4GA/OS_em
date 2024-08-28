@@ -6,6 +6,7 @@ from multiprocessing import Value
 from multiprocessing import Process
 from enum import Enum
 from random import randint
+from time import sleep
 
 class PState(Enum):
     READY = 0
@@ -38,7 +39,8 @@ class ProcSim():
 
     @progress.setter
     def _progress(self, new_value):
-        if self.__components['progress'].value >= self.__components['threshold']:
+        print(f'new value: {new_value}')
+        if  new_value >= self.__components['threshold']:
             self.__components['progress'].value = self.__components['threshold']
             self.__components['state'].value = PState.COMPLETED.value
         else:
@@ -60,11 +62,15 @@ class ProcSim():
             self.__components['state'].value = new_state.value
 
     def _update(self):
-        self._progress = self.progress + randint(7, 25)
+        my_randint = randint(8, 850)
+        print(f'Current progress: {self.progress}') 
+        self._progress = self.progress + my_randint
+        print (f'updated progress: {self.progress}')
 
     def _completion_tracker(self):
         self.state = PState.RUNNING
-        while self.progress <= self.threshold:
+        while self.progress < self.threshold:
+            sleep(0.1)
             if self.state == PState.RUNNING.value:
                 self._update()
         self.state = PState.COMPLETED
