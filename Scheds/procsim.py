@@ -42,7 +42,7 @@ class ProcSim():
             self.__components['progress'].value = self.__components['threshold']
             self.__components['state'].value = PState.COMPLETED.value
         else:
-            self.__components['progress'] = new_value
+            self.__components['progress'].value = new_value
 
     @property
     def threshold(self):

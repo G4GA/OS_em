@@ -30,7 +30,7 @@ class BatchScheduler():
         self.__components['cur_proc'] = new_proc
 
     def start_queue(self):
-        for process in self.__components['process']:
+        for process in self.__components['proclist']:
             self._cur_proc = process
             process.run()
             process.wait()
