@@ -1,7 +1,6 @@
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtWidgets import QGridLayout
 from PyQt6.QtWidgets import QWidget
-from PyQt6.QtWidgets import QLabel
 from PyQt6.QtWidgets import QPushButton
 
 class MenuWindow(QMainWindow):
@@ -16,6 +15,7 @@ class MenuWindow(QMainWindow):
 
         #Add test button
         self.add_button('Batch Processing', lambda: callback_fn('batch'))
+        self.add_button('Multiprogramming showcase', lambda: callback_fn('multip'))
 
         #window setting
         self.set_window()

@@ -1,5 +1,10 @@
+'''
+Window handler module
+'''
+
 from .menu_window import MenuWindow
 from .WSched.w_batch import BatchWindow
+from .WSched.w_multip import MultiprogrammingWindow
 
 class WindowHandler():
     def __init__(self):
@@ -24,6 +29,8 @@ class WindowHandler():
 
         if option == 'batch':
             self.__current_window = BatchWindow(self.go_back_fn)
+        elif option == 'multip':
+            self.__current_window = MultiprogrammingWindow(self.go_back_fn)
 
         self.__current_window.show()
 
