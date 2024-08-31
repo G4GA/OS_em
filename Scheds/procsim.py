@@ -39,7 +39,6 @@ class ProcSim():
 
     @progress.setter
     def _progress(self, new_value):
-        print(f'new value: {new_value}')
         if  new_value >= self.__components['threshold']:
             self.__components['progress'].value = self.__components['threshold']
             self.__components['state'].value = PState.COMPLETED.value
@@ -63,9 +62,7 @@ class ProcSim():
 
     def _update(self):
         my_randint = randint(8, 850)
-        print(f'Current progress: {self.progress}') 
         self._progress = self.progress + my_randint
-        print (f'updated progress: {self.progress}')
 
     def _completion_tracker(self):
         self.state = PState.RUNNING
