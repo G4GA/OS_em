@@ -61,7 +61,7 @@ class ProcSim():
             self.__components['state'].value = new_state.value
 
     def _update(self):
-        my_randint = randint(8, 850)
+        my_randint = randint(8, 450)
         self._progress = self.progress + my_randint
 
     def _completion_tracker(self):

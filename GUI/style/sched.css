@@ -2,6 +2,11 @@ QMainWindow {
     background-color: #2E073F;
 }
 
+#p_bar {
+    width: 100%;
+    text-align: center;
+}
+
 #upper, #lower {
     background-color: #7A1CAC;
     border-radius: 5px;

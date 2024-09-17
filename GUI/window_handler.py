@@ -1,10 +1,10 @@
 '''
 Window handler module
 '''
-
 from .menu_window import MenuWindow
 from .WSched.w_batch import BatchWindow
 from .WSched.w_multip import MultiprogrammingWindow
+from .WSched.w_pstate import PStateWindow
 
 class WindowHandler():
     def __init__(self):
@@ -31,6 +31,8 @@ class WindowHandler():
             self.__current_window = BatchWindow(self.go_back_fn)
         elif option == 'multip':
             self.__current_window = MultiprogrammingWindow(self.go_back_fn)
+        elif option == 'p_signal':
+            self.__current_window = PStateWindow(self.go_back_fn)
 
         self.__current_window.show()
 

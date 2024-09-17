@@ -19,10 +19,11 @@ from PyQt6.QtCore import (
 
 from Scheds.procsim import (
     ProcSim,
+    PState
 )
 
 class SchedWindow(QMainWindow):
-    def __init__(self, go_back_fn, layout, scheduler):
+    def __init__(self, go_back_fn, layout, scheduler, override=False):
         super().__init__()
         self._components = {
             'main_widget': QWidget(),
@@ -42,7 +43,8 @@ class SchedWindow(QMainWindow):
         self._add_ctrl_bttn('Return to main menu', go_back_fn)
 
         self.setWindowTitle("Batch Processing")
-        self.add_progress_bar()
+        if not override:
+            self.add_progress_bar()
 
 
     def add_progress_bar(self):
@@ -64,6 +66,12 @@ class SchedWindow(QMainWindow):
 
     @staticmethod
     def update_bar(prog_bar: QProgressBar, proc_sim:ProcSim):
+        if proc_sim.state == PState.RUNNING.value:
+            prog_bar.setStyleSheet('#p_bar::chunk { background-color: green; }')
+        elif proc_sim.state == PState.HALTED.value:
+            prog_bar.setStyleSheet('#p_bar::chunk { background-color: yellow; }')
+        elif proc_sim.state == PState.COMPLETED.value:
+            prog_bar.setStyleSheet('#p_bar::chunk { background-color: #6C48C5; }')
         prog_bar.setValue(proc_sim.progress)
 
     @property

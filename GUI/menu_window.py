@@ -16,7 +16,7 @@ class MenuWindow(QMainWindow):
         #Add test button
         self.add_button('Batch Processing', lambda: callback_fn('batch'))
         self.add_button('Multiprogramming showcase', lambda: callback_fn('multip'))
-
+        self.add_button('Process States and Signaling', lambda: callback_fn('p_signal'))
         #window setting
         self.set_window()
 
