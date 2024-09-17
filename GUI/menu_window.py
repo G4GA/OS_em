@@ -17,6 +17,7 @@ class MenuWindow(QMainWindow):
         self.add_button('Batch Processing', lambda: callback_fn('batch'))
         self.add_button('Multiprogramming showcase', lambda: callback_fn('multip'))
         self.add_button('Process States and Signaling', lambda: callback_fn('p_signal'))
+        self.add_button('Round Robin Scheduler', lambda: callback_fn('rr_sched'))
         #window setting
         self.set_window()
 
