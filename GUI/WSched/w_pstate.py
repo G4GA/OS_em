@@ -15,10 +15,10 @@ from Scheds.procsim import ProcSim
 from .w_sched import SchedWindow
 
 class PStateWindow (SchedWindow):
-    def __init__(self, go_back_fn):
+    def __init__(self, go_back_fn, sched):
         super().__init__(go_back_fn,
                          QVBoxLayout(),
-                         MultiprogrammingScheduler(16),
+                         sched(16),
                          override=True)
         self.setFixedSize(1500, 600)
         self.setWindowTitle('Process\' states and signaling')
@@ -32,19 +32,27 @@ class PStateWindow (SchedWindow):
             widget = QWidget()
             layout = QVBoxLayout()
             halt_button = QPushButton('H/R')
+            kill_button = QPushButton('Kill')
+            bttn_tuple = (halt_button, kill_button)
 
             prog_bar_dict['prog_bar'].setObjectName('p_bar')
             halt_button.clicked.connect(partial(PStateWindow.halt_resume,index, self.scheduler.proclist))
+            kill_button.clicked.connect(partial(PStateWindow.kill_p,
+                                                      index,
+                                                      self.scheduler.proclist,
+                                                      bttn_tuple))
 
             widget.setLayout(layout)
 
             layout.addWidget(prog_bar_dict['prog_bar'])
             layout.addWidget(halt_button)
+            layout.addWidget(kill_button)
 
             prog_info = {
                 'widget': widget,
                 'layout': layout,
                 'h_button': halt_button,
+                'k_button': kill_button,
                 'p_bar_d': prog_bar_dict
             }
 
@@ -59,3 +67,11 @@ class PStateWindow (SchedWindow):
             proc_s.state = PState.HALTED
         elif proc_s.state == PState.HALTED.value:
             proc_s.state = PState.RUNNING
+
+    @staticmethod
+    def kill_p(proc_index, proc_list, b_tuple):
+        hb, kb = b_tuple
+        proc_s = proc_list[proc_index]
+        proc_s.state = PState.KILLED
+        hb.setEnabled(False)
+        kb.setEnabled(False)

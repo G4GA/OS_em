@@ -12,11 +12,12 @@ class PState(Enum):
     READY = 0
     RUNNING = 1
     HALTED = 2
-    COMPLETED = 3
+    KILLED = 3
+    COMPLETED = 4
 
 class ProcSim():
     def __init__(self):
-        self.__components = {
+        self._components = {
             'process': Process(target=self._completion_tracker),
             'state': Value('i', 0),
             'threshold': randint(7000, 20000),
@@ -31,34 +32,33 @@ class ProcSim():
 
     @property
     def _process(self):
-        return self.__components['process']
+        return self._components['process']
 
     @property
     def progress(self):
-        return self.__components['progress'].value
+        return self._components['progress'].value
 
     @progress.setter
     def _progress(self, new_value):
-        if  new_value >= self.__components['threshold']:
-            self.__components['progress'].value = self.__components['threshold']
-            self.__components['state'].value = PState.COMPLETED.value
+        if  new_value >= self._components['threshold']:
+            self._components['progress'].value = self._components['threshold']
         else:
-            self.__components['progress'].value = new_value
+            self._components['progress'].value = new_value
 
     @property
     def threshold(self):
-        return self.__components['threshold']
+        return self._components['threshold']
 
     @property
     def state(self):
-        return self.__components['state'].value
+        return self._components['state'].value
 
     @state.setter
     def state(self, new_state: PState):
         if new_state == PState.COMPLETED and self._process == self.threshold:
-            self.__components['state'].value = new_state.value
-        elif new_state in (PState.RUNNING, PState.HALTED):
-            self.__components['state'].value = new_state.value
+            self._components['state'].value = new_state.value
+        elif new_state in (PState.RUNNING, PState.HALTED, PState.KILLED):
+            self._components['state'].value = new_state.value
 
     def _update(self):
         my_randint = randint(8, 450)
@@ -66,8 +66,9 @@ class ProcSim():
 
     def _completion_tracker(self):
         self.state = PState.RUNNING
-        while self.progress < self.threshold:
+        while self.progress < self.threshold and self.state != PState.KILLED:
             sleep(0.1)
             if self.state == PState.RUNNING.value:
                 self._update()
-        self.state = PState.COMPLETED
+        if self.state != PState.KILLED:
+            self._components['state'].value = PState.COMPLETED.value

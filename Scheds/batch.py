@@ -2,7 +2,6 @@
 Batch processing algorithm implementation
 """
 
-from .procsim import ProcSim
 from .abs_sched import TemplateScheduler
 
 class BatchScheduler(TemplateScheduler):

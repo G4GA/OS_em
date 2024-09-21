@@ -10,9 +10,9 @@ class TemplateScheduler():
             'proclist': [],
             'cur_proc': None
         }
-        self.__fill_queue(proc_amount)
+        self._fill_queue(proc_amount)
 
-    def __fill_queue(self, amount):
+    def _fill_queue(self, amount):
         for _ in range(amount):
             self._components['proclist'].append(ProcSim())
 

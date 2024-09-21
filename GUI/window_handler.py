@@ -1,11 +1,14 @@
 '''
 Window handler module
 '''
+from Scheds.multi_prog import MultiprogrammingScheduler
+
 from .menu_window import MenuWindow
 from .WSched.w_batch import BatchWindow
 from .WSched.w_multip import MultiprogrammingWindow
 from .WSched.w_pstate import PStateWindow
-
+from .WSched.w_rr import RRWindow
+from .WSched.w_fcfs import FCFSWindow
 class WindowHandler():
     def __init__(self):
         self.__components = {
@@ -32,7 +35,11 @@ class WindowHandler():
         elif option == 'multip':
             self.__current_window = MultiprogrammingWindow(self.go_back_fn)
         elif option == 'p_signal':
-            self.__current_window = PStateWindow(self.go_back_fn)
+            self.__current_window = PStateWindow(self.go_back_fn, MultiprogrammingScheduler)
+        elif option == 'rr_sched':
+            self.__current_window = RRWindow(self.go_back_fn)
+        elif option == 'fcfs_sched':
+            self.__current_window = FCFSWindow(self.go_back_fn)
 
         self.__current_window.show()
 

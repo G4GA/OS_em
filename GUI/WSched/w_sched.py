@@ -22,6 +22,8 @@ from Scheds.procsim import (
     PState
 )
 
+from Scheds.rr import RRProcSim
+
 class SchedWindow(QMainWindow):
     def __init__(self, go_back_fn, layout, scheduler, override=False):
         super().__init__()
@@ -66,14 +68,27 @@ class SchedWindow(QMainWindow):
 
     @staticmethod
     def update_bar(prog_bar: QProgressBar, proc_sim:ProcSim):
+        if isinstance(proc_sim, RRProcSim):
+            if proc_sim.state not in (PState.HALTED.value,
+                                      PState.COMPLETED.value,
+                                      PState.KILLED.value) and not proc_sim.burst:
+                prog_bar.setStyleSheet('#p_bar::chunk { background-color: gray; }')
+            else:
+                SchedWindow.color_bar(prog_bar, proc_sim)
+        else:
+            SchedWindow.color_bar(prog_bar, proc_sim)
+        prog_bar.setValue(proc_sim.progress)
+
+    @staticmethod
+    def color_bar(prog_bar, proc_sim):
         if proc_sim.state == PState.RUNNING.value:
             prog_bar.setStyleSheet('#p_bar::chunk { background-color: green; }')
         elif proc_sim.state == PState.HALTED.value:
             prog_bar.setStyleSheet('#p_bar::chunk { background-color: yellow; }')
         elif proc_sim.state == PState.COMPLETED.value:
             prog_bar.setStyleSheet('#p_bar::chunk { background-color: #6C48C5; }')
-        prog_bar.setValue(proc_sim.progress)
-
+        elif proc_sim.state == PState.KILLED.value:
+            prog_bar.setStyleSheet('#p_bar::chunk { background-color: #D91656; }')
     @property
     def sched_thread(self) -> Thread:
         return self._components['sched_thread']
