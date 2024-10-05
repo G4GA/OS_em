@@ -9,6 +9,8 @@ from .WSched.w_multip import MultiprogrammingWindow
 from .WSched.w_pstate import PStateWindow
 from .WSched.w_rr import RRWindow
 from .WSched.w_fcfs import FCFSWindow
+from .WSched.w_multiq import MultiQWindow
+
 class WindowHandler():
     def __init__(self):
         self.__components = {
@@ -40,6 +42,8 @@ class WindowHandler():
             self.__current_window = RRWindow(self.go_back_fn)
         elif option == 'fcfs_sched':
             self.__current_window = FCFSWindow(self.go_back_fn)
+        elif option == 'multiq':
+            self.__current_window = MultiQWindow(self.go_back_fn, MultiprogrammingScheduler)
 
         self.__current_window.show()
 

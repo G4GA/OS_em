@@ -27,9 +27,17 @@ from Scheds.rr import RRProcSim
 class SchedWindow(QMainWindow):
     def __init__(self, go_back_fn, layout, scheduler, override=False):
         super().__init__()
+        main_layout = None
+        upper_layout = QHBoxLayout()
+        if isinstance(layout, dict):
+            main_layout = layout['main']
+            upper_layout = layout['upper']
+        else:
+            main_layout = layout
+
         self._components = {
             'main_widget': QWidget(),
-            'main_layout': layout,
+            'main_layout': main_layout,
             'prog_bar_list': [],
             'upper': {},
             'lower': {},
@@ -39,18 +47,18 @@ class SchedWindow(QMainWindow):
         self._init_window()
         self._load_style()
 
-        self._set_main_widgets('upper')
-        self._set_main_widgets('lower')
+        self._set_main_widgets('upper', upper_layout)
+        self._set_main_widgets('lower', QHBoxLayout())
 
         self._add_ctrl_bttn('Return to main menu', go_back_fn)
 
-        self.setWindowTitle("Batch Processing")
+        self.setWindowTitle("Angel Damian Raul Garcia Guevara")
         if not override:
-            self.add_progress_bar()
+            self.add_progress_bar(self.scheduler)
 
 
-    def add_progress_bar(self):
-        for proc_sim in self.scheduler.proclist:
+    def add_progress_bar(self, scheduler):
+        for proc_sim in scheduler.proclist:
             prog_bar_dict = SchedWindow._set_progbar(proc_sim)
             self._upper['layout'].addWidget(prog_bar_dict['prog_bar'])
             self._components['prog_bar_list'].append(prog_bar_dict)
@@ -67,7 +75,7 @@ class SchedWindow(QMainWindow):
         return {'prog_bar': progress_bar, 'proc_sim': proc_sim, 'timer': timer}
 
     @staticmethod
-    def update_bar(prog_bar: QProgressBar, proc_sim:ProcSim):
+    def update_bar(prog_bar: QProgressBar, proc_sim:ProcSim) -> None | dict:
         if isinstance(proc_sim, RRProcSim):
             if proc_sim.state not in (PState.HALTED.value,
                                       PState.COMPLETED.value,
@@ -128,9 +136,9 @@ class SchedWindow(QMainWindow):
             style = file.read()
         self.setStyleSheet(style)
 
-    def _set_main_widgets(self, side):
+    def _set_main_widgets(self, side, layout):
         widget = QWidget()
-        layout = QHBoxLayout()
+        layout = layout
 
         widget.setLayout(layout)
         widget.setObjectName(side)
