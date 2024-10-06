@@ -14,12 +14,30 @@ class MenuWindow(QMainWindow):
         }
 
         #Add test button
-        self.add_button('Batch Processing', lambda: callback_fn('batch'))
-        self.add_button('Multiprogramming showcase', lambda: callback_fn('multip'))
-        self.add_button('Process States and Signaling', lambda: callback_fn('p_signal'))
-        self.add_button('Round Robin Scheduler', lambda: callback_fn('rr_sched'))
-        self.add_button('Firs Come First Served Scheduler', lambda: callback_fn('fcfs_sched'))
-        self.add_button('Multi Queue', lambda: callback_fn('multiq'))
+        self.add_button('Batch Processing',
+                        lambda: callback_fn('batch'),
+                        'sched')
+        self.add_button('Multiprogramming showcase',
+                        lambda: callback_fn('multip'),
+                        'sched')
+        self.add_button('Process States and Signaling',
+                        lambda: callback_fn('p_signal'),
+                        'sched')
+        self.add_button('Round Robin Scheduler',
+                        lambda: callback_fn('rr_sched'),
+                        'sched')
+        self.add_button('Firs Come First Served Scheduler',
+                        lambda: callback_fn('fcfs_sched'),
+                        'sched')
+        self.add_button('Multi Queue Scheduler',
+                        lambda: callback_fn('multiq'),
+                        'sched')
+        self.add_button('Priority Scheduler',
+                        lambda: callback_fn('priority'),
+                        'sched')
+        self.add_button('Producer-Consumer',
+                        lambda: callback_fn('producer_c'),
+                        'concurrency')
         #window setting
         self.set_window()
 
@@ -60,12 +78,20 @@ class MenuWindow(QMainWindow):
         self.setCentralWidget(self.main_widget)
 
     def __show_bttns(self):
-        for bttn in self.__bttn_list:
-            self.main_layout.addWidget(bttn)
+            sched_counter = 0
+            concurrency_counter = 0
+            print(self.__bttn_list)
+            for bttn, label in self.__bttn_list:
+                if label == 'sched':
+                    self.main_layout.addWidget(bttn, sched_counter, 0)
+                    sched_counter = sched_counter + 1
+                elif label == 'concurrency':
+                    self.main_layout.addWidget(bttn, concurrency_counter, 1)
+                    concurrency_counter = concurrency_counter + 1
 
-    def add_button(self, bttn_label: str, callback_fn):
+    def add_button(self, bttn_label: str, callback_fn, label):
         new_button = QPushButton(bttn_label)
         new_button.clicked.connect(callback_fn)
 
-        self.__bttn_list.append(new_button)
+        self.__bttn_list.append((new_button, label))
 

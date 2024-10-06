@@ -18,10 +18,10 @@ from .w_sched import SchedWindow
 PROG_AMOUNT = 16
 
 class PStateWindow (SchedWindow):
-    def __init__(self, go_back_fn, sched):
+    def __init__(self, go_back_fn, sched, p_amount=PROG_AMOUNT):
         super().__init__(go_back_fn,
                          {'main':QVBoxLayout(), 'upper':QVBoxLayout()},
-                         sched(PROG_AMOUNT),
+                         sched(p_amount),
                          override=True)
         self.setFixedSize(1500, 600)
         self._components['sched_thread'] = Thread(target=self.scheduler.start_queue)
