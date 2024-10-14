@@ -80,7 +80,6 @@ class MenuWindow(QMainWindow):
     def __show_bttns(self):
             sched_counter = 0
             concurrency_counter = 0
-            print(self.__bttn_list)
             for bttn, label in self.__bttn_list:
                 if label == 'sched':
                     self.main_layout.addWidget(bttn, sched_counter, 0)

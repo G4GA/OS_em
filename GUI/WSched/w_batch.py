@@ -17,7 +17,6 @@ class BatchWindow(SchedWindow):
         self._components['sched_thread'].start()
 
     def _halt_button_callback(self):
-        print(f'current state: {self.scheduler.cur_proc.state} running state: {PState.RUNNING.value}')
         if self.scheduler.cur_proc.state == PState.RUNNING.value:
             self.scheduler.cur_proc.state = PState.HALTED
         elif self.scheduler.cur_proc.state == PState.HALTED.value:

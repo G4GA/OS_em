@@ -7,7 +7,7 @@ QMainWindow {
     text-align: center;
 }
 
-#upper, #lower {
+#upper, #lower, #sidev {
     background-color: #7A1CAC;
     border-radius: 5px;
 }

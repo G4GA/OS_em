@@ -40,7 +40,6 @@ class FCFSProcSim(ProcSim):
                         pass
                     else:
                         self._progress = new_p
-        print('sdf')
         if self.state != PState.KILLED:
             self._components['state'].value = PState.COMPLETED.value
 
