@@ -41,12 +41,12 @@ class ProdConsWindow(QMainWindow):
                 'layout': QVBoxLayout(),
                 'producer': {'widget': QWidget(),
                              'layout': QVBoxLayout(),
-                             'w_list': [],
+                             'w_dict': {},
                              'pixmap': QPixmap('./GUI/WConc/green_semaphor.png')},
 
                 'consumer': {'widget': QWidget(),
                              'layout': QVBoxLayout(),
-                             'w_list': [],
+                             'w_dict': {},
                              'pixmap': QPixmap('./GUI/WConc/red_semaphor.png')}
             },
             'buffer': {
@@ -56,11 +56,7 @@ class ProdConsWindow(QMainWindow):
             },
             'go_back_bttn': QPushButton('Return to main menu')
         }
-        self._init_window()
 
-        self._init_bttns(go_back_fn)
-
-        self.setWindowTitle('Angel Damian Raul Garcia Guevara')
         self._load_style()
 
     @property
@@ -98,59 +94,6 @@ class ProdConsWindow(QMainWindow):
     @property
     def go_back_bttn(self):
         return self._components['go_back_bttn']
-
-    def set_prod_cons(self):
-        self.prod_cons['widget'].setLayout(self.prod_cons['layout'])
-        self._upper['layout'].addWidget(self.prod_cons['widget'])
-
-    def set_PS(self, cons_pro, pc_str):
-        cons_pro['widget'].setLayout(cons_pro['layout'])
-        self.prod_cons['layout'].addWidget(cons_pro['widget'])
-        p_label = QLabel()
-        p_label.setPixmap(cons_pro['pixmap'])
-        p_label.setFixedSize(IMAGE_WIDHT, IMAGE_HEIGHT)
-        p_label.setScaledContents(True)
-        name_label = QLabel(pc_str)
-        progress_bar = QProgressBar()
-        progress_bar.setOrientation(Qt.Orientation.Horizontal)
-
-        cons_pro['layout'].addWidget(name_label)
-        cons_pro['layout'].addWidget(p_label)
-        cons_pro['layout'].addWidget(progress_bar)
-        cons_pro['w_list'].append(name_label)
-        cons_pro['w_list'].append(p_label)
-
-    def _set_upper_lower(self):
-        self._upper['widget'].setLayout(self._upper['layout'])
-        self._lower['widget'].setLayout(self._lower['layout'])
-
-        self._upper['widget'].setObjectName('upper')
-        self._lower['widget'].setObjectName('lower')
-
-        self.main_layout.addWidget(self._upper['widget'])
-        self.main_layout.addWidget(self._lower['widget'])
-
-    def _init_bttns(self, go_back_fn):
-        self._lower['layout'].addWidget(self.go_back_bttn)
-        self.go_back_bttn.clicked.connect(go_back_fn)
-
-    def _init_buffer(self):
-        self.buffer['widget'].setLayout(self.buffer['layout'])
-        label = QLabel('Buffer')
-        p_bar = QProgressBar()
-        p_bar.setOrientation(Qt.Orientation.Horizontal)
-        self.buffer['layout'].addWidget(label)
-        self.buffer['layout'].addWidget(p_bar)
-        self._upper['layout'].addWidget(self.buffer['widget'])
-
-    def _init_window(self):
-        self.main_widget.setLayout(self.main_layout)
-        self.setCentralWidget(self.main_widget)
-        self._set_upper_lower()
-        self.set_prod_cons()
-        self.set_PS(self.producer, 'Producer')
-        self.set_PS(self.consumer, 'Consumer')
-        self._init_buffer()
 
     def _load_style(self):
         style = ''

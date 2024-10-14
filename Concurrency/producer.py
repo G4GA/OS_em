@@ -1,0 +1,3 @@
+"""
+Module for producer class
+"""
