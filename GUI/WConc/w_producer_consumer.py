@@ -1,8 +1,6 @@
 """
 Module for producer consumer window class
 """
-
-from re import T
 from PyQt6.QtWidgets import (
     QMainWindow,
     QWidget,
@@ -15,8 +13,12 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QPixmap
 
 from PyQt6.QtCore import (
-    Qt
+    QTimer
 )
+
+from Concurrency.buffer import Buffer
+from Concurrency.producer import Producer
+from Concurrency.consumer import Consumer
 
 IMAGE_HEIGHT = 50
 IMAGE_WIDHT = 60
@@ -24,7 +26,12 @@ IMAGE_WIDHT = 60
 class ProdConsWindow(QMainWindow):
     def __init__(self, go_back_fn, layouts):
         super().__init__()
+        buffer = Buffer()
         self._components = {
+            'pixmap_dict': {
+                'green': QPixmap('./GUI/WConc/green_semaphor.png'),
+                'red': QPixmap('./GUI/WConc/red_semaphor.png'),
+            },
             'main': {
                 'widget': QWidget(),
                 'layout': QVBoxLayout()
@@ -45,26 +52,30 @@ class ProdConsWindow(QMainWindow):
                              'w_dict': {
                                  'name': QLabel('Producer'),
                                  'picture': QLabel(),
-                                 'p_bar': QProgressBar()
+                                 'p_bar': QProgressBar(),
+                                 'timer': QTimer()
                              },
-                             'pixmap': QPixmap('./GUI/WConc/green_semaphor.png')},
+                             'handler': Producer(buffer)},
 
                 'consumer': {'widget': QWidget(),
                              'layout': QVBoxLayout(),
                              'w_dict': {
                                  'name': QLabel('Consumer'),
                                  'picture': QLabel(),
-                                 'p_bar': QProgressBar()
+                                 'p_bar': QProgressBar(),
+                                 'timer': QTimer()
                              },
-                             'pixmap': QPixmap('./GUI/WConc/red_semaphor.png')}
+                             'handler': Consumer(buffer)}
             },
             'buffer': {
                 'widget': QWidget(),
                 'layout': QVBoxLayout(),
                 'w_dict': {
                          'name': QLabel('Buffer'),
-                         'p_bar': QProgressBar()
+                         'p_bar': QProgressBar(),
+                         'timer': QTimer()
                      },
+                'handler': buffer
             },
             'go_back_bttn': QPushButton('Return to main menu')
         }
@@ -122,9 +133,45 @@ class ProdConsWindow(QMainWindow):
     def go_back_bttn(self):
         return self._components['go_back_bttn']
 
+    @property
+    def green(self):
+        return self._components['pixmap_dict']['green']
+
+    @property
+    def red(self):
+        return self._components['pixmap_dict']['red']
+
     def _set_p_bar(self):
-        #TODO Here Implement the timers for the each p_bar
-        pass
+        self._set_buffer_p_bar()
+        self._set_pc_bar(self.producer)
+        self._set_pc_bar(self.consumer)
+
+    def _set_pc_bar(self, h_dict):
+        pbar = h_dict['w_dict']['p_bar']
+        handler = h_dict['handler']
+        timer = h_dict['w_dict']['timer']
+        timer.timeout.connect(lambda: self._update_p_bar(pbar, h_dict))
+        timer.start(50)
+        handler.start()
+        pbar.setMaximum(self.buffer['handler'].size)
+
+    def _update_p_bar(self, p_bar, handler):
+        if handler['handler'].working:
+            handler['w_dict']['picture'].setPixmap(self.green)
+        else:
+            handler['w_dict']['picture'].setPixmap(self.red)
+
+        p_bar.setValue(handler['handler'].progress.value)
+
+    def _set_buffer_p_bar(self):
+        pbar = self.buffer['w_dict']['p_bar']
+        handler = self.buffer['handler']
+        timer = self.buffer['w_dict']['timer']
+
+        pbar.setMaximum(handler.size)
+
+        timer.timeout.connect(lambda: self._update_b_bar(pbar))
+        timer.start(50)
 
     def _set_go_back_bttn(self, go_back_fn):
         self.go_back_bttn.clicked.connect(go_back_fn)
@@ -148,10 +195,10 @@ class ProdConsWindow(QMainWindow):
         layout = self.prod_cons['layout']
         widget.setLayout(layout)
         self._upper['layout'].addWidget(widget)
-        self.set_ps(self.producer, layout)
-        self.set_ps(self.consumer, layout)
+        self.set_ps(self.producer, layout, self.green)
+        self.set_ps(self.consumer, layout, self.red)
 
-    def set_ps(self, ps, p_layout):
+    def set_ps(self, ps, p_layout, pxmap):
         widget = ps['widget']
         layout = ps['layout']
         picture = ps['w_dict']['picture']
@@ -159,7 +206,7 @@ class ProdConsWindow(QMainWindow):
         widget.setLayout(layout)
         layout.addWidget(ps['w_dict']['name'])
 
-        picture.setPixmap(ps['pixmap'])
+        picture.setPixmap(pxmap)
         picture.setFixedSize(50, 90)
         picture.setScaledContents(True)
         layout.addWidget(picture)
@@ -186,4 +233,7 @@ class ProdConsWindow(QMainWindow):
         with open('GUI/style/sched.css', 'r', encoding='utf-8') as file:
             style = file.read()
         self.setStyleSheet(style)
+
+    def _update_b_bar(self, p_bar):
+        p_bar.setValue(self.buffer['handler'].length)
 
