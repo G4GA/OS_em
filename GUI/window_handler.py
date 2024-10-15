@@ -56,6 +56,8 @@ class WindowHandler():
         elif option == 'producer_c':
             self.__current_window = ProdConsWindow(self.go_back_fn,
                                                    {'upper': QHBoxLayout, 'lower': QHBoxLayout})
+        elif option == 'read_write':
+            self.__current_window = None
 
         self.__current_window.show()
 

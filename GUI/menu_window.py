@@ -38,6 +38,9 @@ class MenuWindow(QMainWindow):
         self.add_button('Producer-Consumer',
                         lambda: callback_fn('producer_c'),
                         'concurrency')
+        self.add_button('Readers Writers',
+                        lambda: callback_fn('read_write'),
+                        'concurrency')
         #window setting
         self.set_window()
 
