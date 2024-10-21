@@ -1,5 +1,5 @@
 QMainWindow {
-    background-color: #2E073F;
+    background-color: #E9EED9;
 }
 
 #p_bar {
@@ -8,7 +8,7 @@ QMainWindow {
 }
 
 #upper, #lower, #sidev {
-    background-color: #7A1CAC;
+    background-color: #626F47;
     border-radius: 5px;
 }
 

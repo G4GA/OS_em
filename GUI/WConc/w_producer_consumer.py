@@ -16,9 +16,9 @@ from PyQt6.QtCore import (
     QTimer
 )
 
-from Concurrency.buffer import Buffer
-from Concurrency.producer import Producer
-from Concurrency.consumer import Consumer
+from Concurrency.ProdCons.buffer import Buffer
+from Concurrency.ProdCons.producer import Producer
+from Concurrency.ProdCons.consumer import Consumer
 
 IMAGE_HEIGHT = 50
 IMAGE_WIDHT = 60
