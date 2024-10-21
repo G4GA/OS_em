@@ -78,8 +78,8 @@ class Reader:
                 sleep(0.01)
                 choice_value = choice(buffer.tuple)
                 if not choice_value.lock.is_locked:
-                    cur_value.value = choice_value.value
                     is_locked = choice_value.lock.is_locked
+            cur_value.value = choice_value.value
             is_reading.value = True
             while progress.value < bound:
                 sleep(0.001)
