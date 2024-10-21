@@ -41,6 +41,15 @@ class MenuWindow(QMainWindow):
         self.add_button('Readers Writers',
                         lambda: callback_fn('read_write'),
                         'concurrency')
+
+        self.add_button('Real Memory',
+                        lambda: callback_fn('r_mem'),
+                        'memory')
+
+        self.add_button('Virtual Memory',
+                        lambda: callback_fn('v_mem'),
+                        'memory')
+
         #window setting
         self.set_window()
 
@@ -71,6 +80,7 @@ class MenuWindow(QMainWindow):
 
     def set_window(self):
         self.setWindowTitle("OS Visualization Tool")
+        self.setFixedSize(400, 200)
         self.main_layout = QGridLayout()
         self.main_widget = QWidget()
 
