@@ -267,6 +267,7 @@ class ReaderWriterWindow(QMainWindow):
         super().__init__()
         buffer = SharedBuffer()
         self.setFixedWidth(1900)
+        self.setWindowTitle('Angel Damian Raul Garcia Guevara')
         self._components = {
             'main': {
                 'widget': QWidget(),
