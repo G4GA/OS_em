@@ -112,7 +112,7 @@ class WriterContainer(Container):
         timer = cur_temp['timer']
 
         timer.timeout.connect(lambda: self._update_container((p_bar, wr_bar, writer, timer)))
-        timer.start(100)
+        timer.start(20)
 
         widget.setLayout(layout)
         layout.addWidget(cur_temp['name'])
@@ -124,7 +124,7 @@ class WriterContainer(Container):
     def _build_list(self, qty=0):
         for index in range(qty):
             w_dict, writer = self._build_template()
-            w_dict['name'].setText(f'Writer #{index}')
+            w_dict['name'].setText(f'#{index}')
 
 
             self.inst_list.append((writer, w_dict))
@@ -189,7 +189,7 @@ class BufferContainer(Container):
             timer = b_dict['timer']
             timer.timeout.connect(lambda sh=shared_value, b_dict=b_dict['value']: \
                                             self._update_container((sh, b_dict, timer)))
-            timer.start(100)
+            timer.start(20)
 
             self.inst_list.append((shared_value, b_dict))
 
@@ -214,10 +214,14 @@ class ReaderContainer(Container):
             obj.start_process()
 
     def _update_container(self, args=None):
-        p_bar, r_value, reader, timer = args
+        p_bar, r_value, reader, timer, widget = args
         if not sip.isdeleted(p_bar):
             p_bar.setValue(reader.progress)
             r_value.setText(f'{hex(reader.cur_value)}')
+            if reader.is_reading:
+                widget.setStyleSheet('background-color: #387478;')
+            else:
+                widget.setStyleSheet('background-color: #626F47;')
         else:
             timer.stop()
             reader.process.terminate()
@@ -235,8 +239,12 @@ class ReaderContainer(Container):
 
         reader = Reader(self.buffer)
 
-        timer.timeout.connect(lambda: self._update_container((p_bar, r_value, reader, timer)))
-        timer.start(100)
+        timer.timeout.connect(lambda: self._update_container((p_bar,
+                                                              r_value,
+                                                              reader,
+                                                              timer,
+                                                              widget)))
+        timer.start(20)
 
         p_bar.setMaximum(reader.bound)
 
@@ -258,6 +266,7 @@ class ReaderWriterWindow(QMainWindow):
     def __init__(self, go_back_fn):
         super().__init__()
         buffer = SharedBuffer()
+        self.setFixedWidth(1900)
         self._components = {
             'main': {
                 'widget': QWidget(),
@@ -278,7 +287,7 @@ class ReaderWriterWindow(QMainWindow):
                     'layout': QVBoxLayout(),
                     'name': QLabel('Writers:')
                 },
-                'container': WriterContainer(buffer, 2)
+                'container': WriterContainer(buffer, 22)
             },
             'buffer': {
                 'main': {
@@ -294,7 +303,7 @@ class ReaderWriterWindow(QMainWindow):
                     'layout': QVBoxLayout(),
                     'name': QLabel('Readers:')
                 },
-                'container': ReaderContainer(buffer, 3)
+                'container': ReaderContainer(buffer, 15)
             },
         }
 

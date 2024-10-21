@@ -8,6 +8,8 @@ from multiprocessing import Value
 from random import randint
 from random import choice
 
+from time import sleep
+
 from Concurrency.ProdCons.buffer import LOWER_BOUND
 
 class Reader:
@@ -69,7 +71,21 @@ class Reader:
     def _target_method(ttuple):
         cur_value, is_reading, progress, bound, buffer = ttuple
         while True:
-            is_locked = False
-            while not is_locked:
-                cur_value.value = choice(buffer.tuple)
+            choice_value = choice(buffer.tuple)
+            is_locked = choice_value.lock.is_locked
+            sleep(0.01)
+            while is_locked:
+                sleep(0.01)
+                choice_value = choice(buffer.tuple)
+                if not choice_value.lock.is_locked:
+                    cur_value.value = choice_value.value
+                    is_locked = choice_value.lock.is_locked
             is_reading.value = True
+            while progress.value < bound:
+                sleep(0.001)
+                if choice_value.lock.is_locked:
+                    break
+                progress.value += 2
+            cur_value.value = 0
+            progress.value = 0
+            is_reading.value = False

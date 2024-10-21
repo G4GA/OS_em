@@ -28,7 +28,7 @@ class SharedValue:
 class SharedBuffer:
     def __init__(self):
         self._components = {
-            'tuple': tuple(SharedValue() for _ in range (5))
+            'tuple': tuple(SharedValue() for _ in range (15))
         }
         print(self._components['tuple'])
 

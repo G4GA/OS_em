@@ -19,8 +19,8 @@ class Writer:
     def __init__(self, buffer):
         w = Value('I', 0)
         wr = Value('I', 0)
-        w_b = randint(LOWER_BOUND, UPPER_BOUND)
-        wr_b = randint(LOWER_BOUND, UPPER_BOUND)
+        w_b = randint(1000, 10000)
+        wr_b = randint(1000, 10000)
         self._components = {
             'buffer': buffer,
             'process': Process(target=Writer.start, args=(w,
@@ -66,7 +66,7 @@ class Writer:
         while True:
             while w.value < w_b:
                 sleep(0.001)
-                w.value += 1
+                w.value += 3
             w.value = 0
             Writer._write(buffer, wr, wr_b)
 
@@ -76,16 +76,17 @@ class Writer:
         value = Writer.choose_val(buffer)
         while wr.value < wr_b:
             sleep(0.001)
-            wr.value += 1
+            wr.value += 3
         wr.value = 0
         value.value = randint(0, LOWER_BOUND)
         value.lock.release(getpid())
 
     @staticmethod
     def choose_val(buffer):
-        while True:
+        return_val = choice(buffer.tuple)
+        is_locked = return_val.lock.is_locked
+        while is_locked:
             return_val = choice(buffer.tuple)
-            value = return_val.lock.is_locked
-            return_val.lock.acquire(getpid())
-            if not value:
-                return return_val
+            is_locked = return_val.lock.is_locked
+        return_val.lock.acquire(getpid())
+        return return_val
