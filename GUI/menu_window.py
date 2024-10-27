@@ -44,11 +44,11 @@ class MenuWindow(QMainWindow):
 
         self.add_button('Real Memory',
                         lambda: callback_fn('r_mem'),
-                        'memory')
+                        'concurrency')
 
         self.add_button('Virtual Memory',
                         lambda: callback_fn('v_mem'),
-                        'memory')
+                        'concurrency')
 
         #window setting
         self.set_window()

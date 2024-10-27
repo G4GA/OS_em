@@ -19,6 +19,9 @@ from .WSched.w_multiq import MultiQWindow
 from .WConc.w_producer_consumer import ProdConsWindow
 from .WConc.w_reader_writer import ReaderWriterWindow
 
+from .WMem.w_r_memory import RealMemoryWindow
+from .WMem.w_v_memory import VirtualMemoryWindow
+
 class WindowHandler():
     def __init__(self):
         self.__components = {
@@ -59,6 +62,10 @@ class WindowHandler():
                                                    {'upper': QHBoxLayout, 'lower': QHBoxLayout})
         elif option == 'read_write':
             self.__current_window = ReaderWriterWindow(self.go_back_fn)
+        elif option == 'r_mem':
+            self.__current_window = RealMemoryWindow(self.go_back_fn)
+        elif option == 'v_mem':
+            self.__current_window = VirtualMemoryWindow(self.go_back_fn)
 
         self.__current_window.show()
 

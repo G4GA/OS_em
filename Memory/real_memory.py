@@ -1,1 +1,3 @@
-Hi virtual_memory.py
+"""
+Module for real memory class
+"""
