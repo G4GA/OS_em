@@ -21,6 +21,8 @@ from .WConc.w_reader_writer import ReaderWriterWindow
 
 from .WMem.w_r_memory import RealMemoryWindow
 from .WMem.w_v_memory import VirtualMemoryWindow
+from .WMem.w_buffering import BufferingWindow
+from .WMem.w_io_operations import OperationsIOWindow
 
 class WindowHandler():
     def __init__(self):
@@ -66,6 +68,10 @@ class WindowHandler():
             self.__current_window = RealMemoryWindow(self.go_back_fn)
         elif option == 'v_mem':
             self.__current_window = VirtualMemoryWindow(self.go_back_fn)
+        elif option == 'io':
+            self.__current_window = OperationsIOWindow(self.go_back_fn)
+        elif option == 'buffering':
+            self.__current_window = BufferingWindow(self.go_back_fn)
 
         self.__current_window.show()
 

@@ -50,6 +50,14 @@ class MenuWindow(QMainWindow):
                         lambda: callback_fn('v_mem'),
                         'concurrency')
 
+        self.add_button('I/O Operations',
+                        lambda: callback_fn('io'),
+                        'concurrency')
+
+        self.add_button('Buffering',
+                        lambda: callback_fn('buffering'),
+                        'concurrency')
+
         #window setting
         self.set_window()
 

@@ -12,7 +12,6 @@ from time import sleep
 
 from os import getpid
 
-from Concurrency.ProdCons.buffer import UPPER_BOUND
 from Concurrency.ProdCons.buffer import LOWER_BOUND
 
 class Writer:
@@ -74,12 +73,14 @@ class Writer:
     @staticmethod
     def _write(buffer, wr, wr_b):
         value = Writer.choose_val(buffer)
-        while wr.value < wr_b:
-            sleep(0.001)
-            wr.value += 3
-        wr.value = 0
-        value.value = randint(0, LOWER_BOUND)
-        value.lock.release(getpid())
+        print(value.lock.owner == getpid())
+        if value.lock.owner == getpid():
+            while wr.value < wr_b:
+                sleep(0.001)
+                wr.value += 3
+            wr.value = 0
+            value.value = randint(0, LOWER_BOUND)
+            value.lock.release(getpid())
 
     @staticmethod
     def choose_val(buffer):

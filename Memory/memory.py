@@ -125,11 +125,13 @@ class MemProcess:
     def _target_fn(args:tuple):
         addr, size, buffer,\
         progress, bound, success = args
+
         while progress.value < bound / 3:
             progress.value += randint(1, 20)
             sleep(0.01)
 
         success.value, addr.value = buffer.allocate(size, getpid())
+        sleep(0.01)
 
         if success.value:
             while progress.value < bound:

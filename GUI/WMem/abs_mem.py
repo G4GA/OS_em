@@ -150,8 +150,8 @@ class PContainer(Container):
             p.proc.terminate()
             timer.stop()
 
-class MemoryWindow(QMainWindow):
-    def __init__(self, go_back_fn, p_amount, buffer):
+class AbsWindow(QMainWindow):
+    def __init__(self, go_back_fn):
         super().__init__()
         self.setWindowTitle('Angel Damian Raul Garcia Guevara')
         self._components = {
@@ -167,11 +167,8 @@ class MemoryWindow(QMainWindow):
                 'widget': QWidget(),
                 'layout': QVBoxLayout()
             },
-            'buffer': buffer,
-            'PContainer': PContainer(buffer, p_amount),
             'gb_bttn': QPushButton('Return to main menu')
         }
-
         self._init_main_widgets()
         self._init_go_back_bttn(go_back_fn)
 
@@ -191,17 +188,17 @@ class MemoryWindow(QMainWindow):
     def _gb_bttn(self):
         return self._components['gb_bttn']
 
-    @property
-    def _PContainer(self):
-        return self._components['PContainer']
-
-    @property
-    def _buffer(self):
-        return self._components['buffer']
-
     def _init_go_back_bttn(self, go_back_fn):
         self._gb_bttn.clicked.connect(go_back_fn)
         self._lower['layout'].addWidget(self._gb_bttn)
+
+    def _load_style(self):
+        self._upper['widget'].setObjectName('sidev')
+        self._lower['widget'].setObjectName('sidev')
+        style = ''
+        with open('GUI/style/sched.css', 'r', encoding='utf-8') as file:
+            style = file.read()
+        self.setStyleSheet(style)
 
     @staticmethod
     def add_comp(comp_dict, method):
@@ -211,9 +208,6 @@ class MemoryWindow(QMainWindow):
         widget.setLayout(layout)
         method(widget)
 
-    def _set_containers(self):
-        self._upper['layout'].addWidget(self._PContainer.widget)
-
     def _init_main_widgets(self):
         m_layout_fn = self._main['layout'].addWidget
         self.add_comp(self._main, self.setCentralWidget)
@@ -222,10 +216,25 @@ class MemoryWindow(QMainWindow):
 
         self._load_style()
 
-    def _load_style(self):
-        self._upper['widget'].setObjectName('sidev')
-        self._lower['widget'].setObjectName('sidev')
-        style = ''
-        with open('GUI/style/sched.css', 'r', encoding='utf-8') as file:
-            style = file.read()
-        self.setStyleSheet(style)
+class MemoryWindow(AbsWindow):
+    def __init__(self, go_back_fn, p_amount, buffer):
+        super().__init__(go_back_fn)
+        new_components = {
+            'buffer': buffer,
+            'PContainer': PContainer(buffer, p_amount),
+        }
+
+        self._components = { **self._components,
+                            **new_components}
+
+    @property
+    def _PContainer(self):
+        return self._components['PContainer']
+
+    @property
+    def _buffer(self):
+        return self._components['buffer']
+
+    def _set_containers(self):
+        self._upper['layout'].addWidget(self._PContainer.widget)
+

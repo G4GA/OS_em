@@ -26,9 +26,9 @@ class SharedValue:
         return self._components['lock']
 
 class SharedBuffer:
-    def __init__(self):
+    def __init__(self, amount=15):
         self._components = {
-            'tuple': tuple(SharedValue() for _ in range (15))
+            'tuple': tuple(SharedValue() for _ in range (amount))
         }
         print(self._components['tuple'])
 
