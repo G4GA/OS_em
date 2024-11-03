@@ -32,7 +32,10 @@ class StorageContainer(Container):
 
         new_components = {
             'manager': manager,
-            'w_list': []
+            'w_list': [],
+            'p_bar_label': QLabel('Progress:'),
+            'total_p_bar': QProgressBar(),
+            'total_timer': QTimer()
         }
 
         template = {
@@ -46,6 +49,7 @@ class StorageContainer(Container):
         self._components = {**self._components, **new_components}
 
         self._build_list()
+        self._build_tp_bar()
 
     @property
     def manager(self):
@@ -54,6 +58,40 @@ class StorageContainer(Container):
     @property
     def w_list(self):
         return self._components['w_list']
+
+    @property
+    def total_p_bar(self):
+        return self._components['total_p_bar']
+
+    @property
+    def total_timer(self):
+        return self._components['total_timer']
+
+    @property
+    def p_bar_label(self):
+        return self._components['p_bar_label']
+
+    def _build_tp_bar(self):
+        self.total_p_bar.setMaximum(self.manager.bound)
+        self.total_p_bar.setFixedWidth(500)
+
+        args = (self.total_timer, self.manager,
+                self.total_p_bar)
+
+        self.total_timer.timeout.connect(lambda: StorageContainer._update_bar(args))
+
+        self.w_list[1]['layout'].addWidget(self.p_bar_label)
+        self.w_list[1]['layout'].addWidget(self.total_p_bar)
+
+        self.total_timer.start(20)
+
+    @staticmethod
+    def _update_bar(args):
+        timer, manager, p_bar = args
+        if not sip.isdeleted(p_bar):
+            p_bar.setValue(manager.progress)
+        else:
+            timer.stop()
 
     def _build_template(self, table_data, name):
         w_dict = {}

@@ -5,6 +5,7 @@ Module for buffering classes and utilities
 from random import randint
 
 from threading import Thread
+from multiprocessing import Value
 
 from time import sleep
 
@@ -37,8 +38,8 @@ class StorageManager:
         usb = StorageUnit(amount)
         buffer = StorageUnit(amount)
         drive = StorageUnit(amount)
-        bound = amount * 3
-        self._progress = 0
+        bound = amount * 2
+        self._progress = Value('I', 0)
 
         args = (usb, buffer, drive,
                 amount, self._progress)
@@ -79,11 +80,11 @@ class StorageManager:
 
     @property
     def progress(self):
-        return self._progress
+        return self._progress.value
 
     @progress.setter
     def progress(self, new_value):
-        self._progress = new_value
+        self._progress.value = new_value
 
     @property
     def bound(self):
@@ -109,11 +110,11 @@ class StorageManager:
     def _target_fn(usb, buffer, drive, amount, counter):
 
         while len(buffer.values) < amount:
-            counter = StorageManager._fill_storage_unit(counter, amount,
+            counter.value = StorageManager._fill_storage_unit(counter.value, amount,
                                                    buffer, usb)
 
         while len(drive.values) < amount:
-            counter = StorageManager._fill_storage_unit(counter, amount,
+            counter.value = StorageManager._fill_storage_unit(counter.value, amount,
                                                    drive, buffer)
 
 
