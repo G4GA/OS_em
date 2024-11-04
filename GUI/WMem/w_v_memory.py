@@ -29,7 +29,7 @@ class VirtualMemContainer(RealMemContainer):
                 }
             },
             'vir_mem': {
-                'name': QLabel('Virutal Memory'),
+                'name': QLabel('Virtual Memory'),
                 'widget': QWidget(),
                 'layout': QVBoxLayout(),
                 'grid': {
