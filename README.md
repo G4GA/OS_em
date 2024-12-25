@@ -1,4 +1,3 @@
-# OS Emulator
+# OS Algorithms Showcase
 
 Project made for my Operative System class
-Hi from laptop
